@@ -8,5 +8,4 @@ private:
 
 public:
 	PerspectiveCamera(float x, float y, float z, float fov, float windowWidth, float windowHeight);
-	glm::mat4 getProjectionMatrix();
 };

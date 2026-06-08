@@ -9,6 +9,5 @@ private:
 
 public:
 	OrthoCamera(float x, float y, float z, float windowWidth, float windowHeight, float near, float far);
-	glm::mat4 getProjectionMatrix();
 };
 

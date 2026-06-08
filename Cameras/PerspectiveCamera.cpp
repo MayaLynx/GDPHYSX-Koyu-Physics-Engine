@@ -11,10 +11,5 @@ PerspectiveCamera::PerspectiveCamera(float x, float y, float z, float fov, float
 		100.0f
 	);
 
-	updateCenter(glm::vec3(0.f, -700.f, 0.f));
-}
-
-glm::mat4 PerspectiveCamera::getProjectionMatrix()
-{
-	return projection;
+	updateCenter(glm::vec3(0.f, -350.f, 0.f));
 }

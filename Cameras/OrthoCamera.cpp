@@ -14,8 +14,3 @@ OrthoCamera::OrthoCamera(float x, float y, float z, float windowWidth, float win
 		far
 	);
 }
-
-glm::mat4 OrthoCamera::getProjectionMatrix()
-{
-	return projection;
-}
