@@ -91,12 +91,6 @@ void model3D::translate()
         glm::vec3(position)
 
     );
-
-    /*unsigned int transformLoc = glGetUniformLocation(shader, "transform");
-    glUniformMatrix4fv(transformLoc,
-        1,
-        GL_FALSE,
-        glm::value_ptr(transformation_matrix));*/
 }
 
 void model3D::setScale(float x, float y, float z)
