@@ -60,16 +60,6 @@ namespace Koyu
 		lifespan = newLifespan;
 	}
 
-	void PhysicsParticle::destroy()
-	{
-		isDestroyed = true;
-	}
-
-	bool PhysicsParticle::IsDestroyed()
-	{
-		return isDestroyed;
-	}
-
 	void PhysicsParticle::updatePosition(float deltaTime)
 	{
 		this->position = this->position + (this->velocity * deltaTime) + ((1.0f / 2.0f) * (this->acceleration * deltaTime * deltaTime));

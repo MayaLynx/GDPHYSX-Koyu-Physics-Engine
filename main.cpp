@@ -56,6 +56,8 @@ static void Key_Callback(GLFWwindow* window,
     {
         isSimulationActive = !isSimulationActive; // Pauses / plays the simulation when pressed
     }
+
+    // Changes active camera
     if (key == GLFW_KEY_1 &&
         action == GLFW_PRESS)
     {
@@ -76,12 +78,11 @@ int main(void)
     GLFWwindow* window;
 
     std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count()); // Random number generator for values
-    std::uniform_int_distribution<> randomScale(2, 10);
+    std::uniform_int_distribution<> randomScale(2, 10); // Limits random scale values to 2-10
 
     std::vector<Koyu::PhysicsParticle*> particles; // Vector to store the particles
-    std::vector<Camera*> cameras;
+    std::vector<Camera*> cameras; // Stores the ortho and perspective cameras
     int maxParticleCount = 0;
-    //maxParticleCount = 500;
 
     /* Initialize the library */
     if (!glfwInit())
@@ -137,35 +138,13 @@ int main(void)
     glAttachShader(shaderProg, vertexShader);
     glAttachShader(shaderProg, fragShader);
     glLinkProgram(shaderProg);
-
-    // Orthographic view matrix
-    /*glm::mat4 projection = glm::ortho(
-        -400.0f,
-        400.0f,
-        -400.0f,
-        400.0f,
-        -400.0f,
-        400.0f);*/
     
     // Create cameras
     OrthoCamera* orthoCam = new OrthoCamera(0.f, 0.f, 50.f, windowWidth/2, windowHeight/2, -400, 400);
-    glm::mat4 projection = orthoCam->getProjection();
 
     PerspectiveCamera* perspectiveCam = new PerspectiveCamera(0.f, -350.f, 80.f, 100.f, windowWidth, windowHeight);
     
     Camera* activeCam = orthoCam;
-
-    // Create object
-    model3D* sphere = new model3D("3D/sphere.obj", glm::vec3(0.f, 0.f, 0.f), shaderProg);
-
-    /*Physics::PhysicsParticle* particle = new Physics::PhysicsParticle();
-    particle->velocity = glm::vec3(200.f, 0.f, 0.f);*/
-
-    /*Physics::PhysicsParticle* particle = new Physics::PhysicsParticle(sphere);
-    particle->setScale(10.f, 10.f, 10.f);
-    particle->setVelocity(glm::vec3(-100, 0, 0));
-    particle->setColor(glm::vec3(0.4f, 0.f, 0.4f));
-    particles.push_back(particle);*/
 
     using clock = std::chrono::high_resolution_clock;
     auto curr_time = clock::now();
@@ -177,6 +156,7 @@ int main(void)
     {
         glfwPollEvents();
 
+        // Asks user the max number of particles on screen
         if (maxParticleCount <= 0)
         {
             std::cout << "Enter number of sparks to simulate: ";
@@ -196,6 +176,8 @@ int main(void)
 
             //std::cout << "Physics update" << std::endl;
 
+            // Create particles each physics update until max particle count is reached.
+            // New ones are created after particles are destroyed.
             if (particles.size() < maxParticleCount)
             {
                 model3D* newSphere = new model3D("3D/sphere.obj", glm::vec3(0.f, 0.f, 0.f), shaderProg);
@@ -205,16 +187,16 @@ int main(void)
                 particles.push_back(newParticle);
             }
             
-            int count = 0;
+            int count = 0; // Used to get index of particle to be destoyed.
             for (auto p : particles)
             {
                 p->update(timestep_sec);
 
+                // Destroy particle when its lifespan reaches 0.
                 if (p->getLifespan() <= 0)
                 {
                     particles.erase(particles.begin() + count);
                 }
-
                 count++;
             }
         }
@@ -238,42 +220,13 @@ int main(void)
             activeCam = perspectiveCam;
         }
 
-        projection = activeCam->getProjection();
+        // Projection matrix
+        glm::mat4 projection = activeCam->getProjection();
 
         // Position of camera in the world
-        //glm::vec3 cameraPos = glm::vec3(0.f, 0.f, 200.0f);
         glm::vec3 cameraPos = activeCam->getCameraPos();
 
-        //glm::mat4 cameraPositionMatrix =
-        //    glm::translate(glm::mat4(1.0f),
-        //        cameraPos * -1.0f);
-
-        //glm::vec3 worldUp = glm::vec3(0, 1.0f, 0);
-        //glm::vec3 center = glm::vec3(0.f, 0.f, 0.f);
-
-        //// Forward, Right, Up
-        //glm::vec3 F = glm::vec3(center - cameraPos);
-        //F = glm::normalize(F);
-        //glm::vec3 R = glm::normalize(glm::cross(F, worldUp));
-        //glm::vec3 U = glm::normalize(glm::cross(R, F));
-
-        //glm::mat4 cameraRotMatrix = glm::mat4(1.0f);
-
-        //// Camera matrix
-        //cameraRotMatrix[0][0] = R.x;
-        //cameraRotMatrix[1][0] = R.y;
-        //cameraRotMatrix[2][0] = R.z;
-
-        //cameraRotMatrix[0][1] = U.x;
-        //cameraRotMatrix[1][1] = U.y;
-        //cameraRotMatrix[2][1] = U.z;
-
-        //cameraRotMatrix[0][2] = -F.x;
-        //cameraRotMatrix[1][2] = -F.y;
-        //cameraRotMatrix[2][2] = -F.z;
-
         // View matrix
-        //glm::mat4 viewMatrix = cameraRotMatrix * cameraPositionMatrix;
         glm::mat4 viewMatrix = activeCam->getViewMatrix();
 
         // Projection matrix assignment
