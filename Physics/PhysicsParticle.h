@@ -7,7 +7,7 @@
 #include <chrono>
 #include "../model3D/model3d.h"
 
-namespace Physics
+namespace Koyu
 {
 	class PhysicsParticle
 	{

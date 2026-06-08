@@ -1,15 +1,15 @@
 #include "PhysicsParticle.h"
 
-namespace Physics
+namespace Koyu
 {
 	PhysicsParticle::PhysicsParticle()
 	{
 		std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
-		std::uniform_int_distribution<> randomXZVel(-100, 100);
-		std::uniform_int_distribution<> randomYVel(50, 250);
+		std::uniform_int_distribution<> randomXZVel(-75, 75);
+		std::uniform_int_distribution<> randomYVel(50, 200);
 		std::uniform_int_distribution<> randomLifespan(1, 10);
 
-		this->position = glm::vec3(0.f, -700.f, 0.f);
+		this->position = glm::vec3(0.f, -350.f, 0.f);
 		this->velocity = glm::vec3(
 						randomXZVel(rng),
 						randomYVel(rng),

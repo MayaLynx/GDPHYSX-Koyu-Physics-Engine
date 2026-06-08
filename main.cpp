@@ -78,7 +78,7 @@ int main(void)
     std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count()); // Random number generator for values
     std::uniform_int_distribution<> randomScale(2, 10);
 
-    std::vector<Physics::PhysicsParticle*> particles; // Vector to store the particles
+    std::vector<Koyu::PhysicsParticle*> particles; // Vector to store the particles
     std::vector<Camera*> cameras;
     int maxParticleCount = 0;
     //maxParticleCount = 500;
@@ -139,24 +139,24 @@ int main(void)
     glLinkProgram(shaderProg);
 
     // Orthographic view matrix
-    glm::mat4 projection = glm::ortho(
-        -800.0f,
-        800.0f,
-        -800.0f,
-        800.0f,
-        -800.0f,
-        800.0f);
+    /*glm::mat4 projection = glm::ortho(
+        -400.0f,
+        400.0f,
+        -400.0f,
+        400.0f,
+        -400.0f,
+        400.0f);*/
     
     // Create cameras
-    OrthoCamera* orthoCam = new OrthoCamera(0.f, 0.f, 400.f, windowWidth, windowHeight, -800, 800);
-    projection = orthoCam->getProjectionMatrix();
+    OrthoCamera* orthoCam = new OrthoCamera(0.f, 0.f, 50.f, windowWidth/2, windowHeight/2, -400, 400);
+    glm::mat4 projection = orthoCam->getProjection();
 
-    PerspectiveCamera* perspectiveCam = new PerspectiveCamera(0.f, -700.f, 80.f, 100.f, windowWidth, windowHeight);
+    PerspectiveCamera* perspectiveCam = new PerspectiveCamera(0.f, -350.f, 80.f, 100.f, windowWidth, windowHeight);
     
     Camera* activeCam = orthoCam;
 
     // Create object
-    model3D* sphere = new model3D("3D/sphere.obj", glm::vec3(0.f, -700.f, 0.f), shaderProg);
+    model3D* sphere = new model3D("3D/sphere.obj", glm::vec3(0.f, 0.f, 0.f), shaderProg);
 
     /*Physics::PhysicsParticle* particle = new Physics::PhysicsParticle();
     particle->velocity = glm::vec3(200.f, 0.f, 0.f);*/
@@ -198,10 +198,10 @@ int main(void)
 
             if (particles.size() < maxParticleCount)
             {
-                model3D* newSphere = new model3D("3D/sphere.obj", glm::vec3(0.f, -700.f, 0.f), shaderProg);
+                model3D* newSphere = new model3D("3D/sphere.obj", glm::vec3(0.f, 0.f, 0.f), shaderProg);
                 float newScale = randomScale(rng);
                 newSphere->setScale(newScale, newScale, newScale);
-                Physics::PhysicsParticle* newParticle = new Physics::PhysicsParticle(newSphere);
+                Koyu::PhysicsParticle* newParticle = new Koyu::PhysicsParticle(newSphere);
                 particles.push_back(newParticle);
             }
             
