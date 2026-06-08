@@ -4,19 +4,21 @@ namespace Koyu
 {
 	PhysicsParticle::PhysicsParticle()
 	{
-		std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
+		std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count()); // Random number generator for values
+
+		// Limits the values for different attributes
 		std::uniform_int_distribution<> randomXZVel(-75, 75);
 		std::uniform_int_distribution<> randomYVel(50, 200);
 		std::uniform_int_distribution<> randomLifespan(1, 10);
 
-		this->position = glm::vec3(0.f, -350.f, 0.f);
+		this->position = glm::vec3(0.f, -350.f, 0.f); // Spawns the particle near the bottom of the screen
 		this->velocity = glm::vec3(
 						randomXZVel(rng),
 						randomYVel(rng),
 						randomXZVel(rng)
 		);
 
-		this->acceleration = glm::vec3(0.f, -GRAVITY, 0.f);
+		this->acceleration = glm::vec3(0.f, -GRAVITY, 0.f); // Sets gravity to the particle
 		this->lifespan = randomLifespan(rng);
 		model = nullptr;
 	}
@@ -26,7 +28,9 @@ namespace Koyu
 		std::mt19937 rng(std::chrono::system_clock::now().time_since_epoch().count());
 		std::uniform_int_distribution<> randomColor(0, 100);
 
-		model = newModel;
+		model = newModel; // Assign the sphere model to the particle
+
+		// Sets a random color to the sphere/particle
 		this->setColor(glm::vec3(
 							(float(randomColor(rng)) / 100),
 							(float(randomColor(rng)) / 100),
@@ -75,9 +79,9 @@ namespace Koyu
 		this->updatePosition(time);
 		this->updateVelocity(time);
 
-		this->lifespan -= time;
+		this->lifespan -= time; // Updates lifespan of particle
 
-		model->updatePosition(this->position);
+		model->updatePosition(this->position); // Updates position of sphere model
 	}
 
 	void PhysicsParticle::draw()
